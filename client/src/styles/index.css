@@ -1,0 +1,52 @@
+/* Global styles          */
+:root {
+  --dark-text: #191918;
+  --white-text: #dfdfde;
+
+  --background-color: #fff;
+
+  --navbar-height: 60px;
+  --footer-height: 100px;
+
+  --primary-color: #191918;
+  --secondary-color: #f2f2f2;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
+  font-family: 'Inter', sans-serif;
+  color: var(--dark-text);
+  background-color: var(--background-color);
+}
+
+/* The entire page uses a flex column layout. */
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Positions the main content below the fixed navbar. */
+main {
+  flex: 1;
+  margin-top: var(--navbar-height); 
+  width: 100%;
+  max-width: 960px;
+  padding: 2rem;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+a {
+  text-decoration: none;
+}

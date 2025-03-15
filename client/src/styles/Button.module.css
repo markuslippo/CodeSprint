@@ -1,0 +1,26 @@
+/* Button.module.css */
+.button {
+  padding: 10px 16px;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease; /* Add smooth hover transition */
+}
+
+.primary {
+  background-color: var(--primary-color);
+  color: var(--white-text);
+}
+.primary:hover {
+  background-color: #333;
+}
+
+.secondary {
+  background-color: transparent;
+  color: var(--dark-text);
+}
+.secondary:hover {
+  background-color: var(--secondary-color);
+}

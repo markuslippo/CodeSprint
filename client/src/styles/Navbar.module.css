@@ -1,0 +1,67 @@
+/* ---------------------- */
+/* Navbar.module.css      */
+/* ---------------------- */
+/* Navbar Container */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: var(--navbar-height);
+    display: flex;
+    align-items: center;
+    padding: 0 1rem;
+    z-index: 1000;
+    background-color: var(--background-color);
+    color: var(--dark-text);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1); /* Subtle shadow at bottom */
+    box-sizing: border-box;
+  }
+  
+  .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    /* If you want a bit of spacing to the right of the logo */
+    margin-right: 2rem;
+  }
+  
+  /* Wrapper to space left & right sections */
+  .navWrapper {
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  /* Left Section */
+  .navLeft {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    flex-shrink: 0;
+  }
+  
+  /* Right Section */
+  .navRight {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-shrink: 0;
+  }
+  
+  /* Navigation Links */
+  .navLinks {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+    padding: 0;
+    margin: 0;
+  }
+  
+  /* Link Styling */
+  .navLinks a {
+    color: var(--dark-text);
+    font-weight: 500;
+  }
+  
