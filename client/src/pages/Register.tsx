@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import GoogleLogin from "../components/GoogleLogin.tsx";
 
 function Register() {
@@ -5,7 +6,8 @@ function Register() {
     <div>
 
         <div>
-            <h1>Register to CodeSprint</h1>
+            <h1>CodeSprint</h1>
+            <p>Create your CodeSprint account</p>
             <ul>
                 <li>Measure your coding WPM</li>
                 <li>Practice to make your coding faster</li>
@@ -18,6 +20,11 @@ function Register() {
         <GoogleLogin />
         </div>
     
+
+        <div>
+            <p>Already registered?</p>
+            <Link to="/register">Login</Link> 
+        </div>
     </div>
     
     );

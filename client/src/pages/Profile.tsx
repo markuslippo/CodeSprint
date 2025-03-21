@@ -1,7 +1,11 @@
+import ProfileData from "../components/ProfileData";
+
 function Profile() {
     return (
-    <h1>Profile</h1>
-
+        <div>
+            <h1>Profile</h1>
+            <ProfileData />
+        </div>
     );
 }
   

@@ -11,6 +11,36 @@ import (
 	"google.golang.org/api/idtoken"
 )
 
+func (h *Handler) AuthCheckHandler(c echo.Context) error {
+	fmt.Println("User pinged /auth/me")
+	cookie, err := c.Cookie("access_token")
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, echo.Map{"error": "No access token provided"})
+	}
+
+	tokenStr := cookie.Value
+	email, err := utils.ValidateJWT(tokenStr)
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, echo.Map{"error": "Invalid or expired token"})
+	}
+
+	user, err := h.DB.UserExistsByEmail(email)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Error looking up user"})
+	}
+	if user == nil {
+		return c.JSON(http.StatusUnauthorized, echo.Map{"error": "User no longer exists"})
+	}
+
+	return c.JSON(http.StatusOK, echo.Map{
+		"user": echo.Map{
+			"id":    user.ID,
+			"name":  user.Name,
+			"email": user.Email,
+		},
+	})
+}
+
 func (h *Handler) GoogleAuthHandler(c echo.Context) error {
 	var req struct {
 		Token string `json:"token"`
@@ -40,9 +70,10 @@ func (h *Handler) GoogleAuthHandler(c echo.Context) error {
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Registration error"})
 		}
+		fmt.Println("User registered", user.Name)
+	} else {
+		fmt.Println("User logged in", user.Name)
 	}
-
-	fmt.Println("User logged in", user.Name)
 
 	// Issue JWT tokens
 	accessToken, err := utils.GenereateAccessToken(user.Email)
@@ -59,8 +90,8 @@ func (h *Handler) GoogleAuthHandler(c echo.Context) error {
 	c.SetCookie(utils.SetRefreshCookie(refreshToken))
 
 	return c.JSON(http.StatusOK, echo.Map{
-		"success": true,
 		"user": echo.Map{
+			"id":    user.ID,
 			"name":  user.Name,
 			"email": user.Email,
 		},

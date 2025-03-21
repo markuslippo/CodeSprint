@@ -8,7 +8,6 @@ import (
 )
 
 func (m *MySQLDB) UserExistsByEmail(email string) (*database.User, error) {
-	fmt.Println("Checking if user exists with email", email)
 	var user database.User
 	err := m.db.QueryRow("SELECT id, name, email FROM users WHERE email = ?", email).
 		Scan(&user.ID, &user.Name, &user.Email)

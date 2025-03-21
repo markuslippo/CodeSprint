@@ -30,7 +30,7 @@ func GenereateAccessToken(email string) (string, error) {
 }
 
 func GenerateRefreshToken(email string) (string, error) {
-	duration := 30 * 24 * time.Hour
+	duration := 7 * 24 * time.Hour
 
 	claims := Claims{
 		Email: email,
