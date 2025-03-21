@@ -1,11 +1,13 @@
 package database
 
 type Database interface {
-	RegisterUser(username string) error
+	RegisterUser(name string, email string) (*User, error)
+	UserExistsByEmail(email string) (*User, error)
 	GetUsers() ([]User, error)
 }
 
 type User struct {
-	ID       int    `json:"id,omitempty"`
-	Username string `json:"username"`
+	ID    int
+	Name  string
+	Email string
 }

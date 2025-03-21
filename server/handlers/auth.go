@@ -1,32 +1,99 @@
 package handlers
 
 import (
+	"context"
+	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/labstack/echo/v4"
+	"github.com/markuslippo/CodeSprint/utils"
+	"google.golang.org/api/idtoken"
 )
 
-func (h *Handler) RegisterHandler(c echo.Context) error {
+func (h *Handler) GoogleAuthHandler(c echo.Context) error {
 	var req struct {
-		Username string `json:"username"`
+		Token string `json:"token"`
 	}
 
 	if err := c.Bind(&req); err != nil {
-		return c.JSON(http.StatusBadRequest, echo.Map{"error": "Invalid request body"})
+		return c.JSON(http.StatusBadRequest, echo.Map{"error": "Invalid request"})
 	}
 
-	if err := h.DB.RegisterUser(req.Username); err != nil {
-		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Could not register user"})
+	payload, err := idtoken.Validate(context.Background(), req.Token, os.Getenv("GOOGLE_CLIENT_ID"))
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, echo.Map{"error": "Invalid Google token"})
 	}
 
-	return c.JSON(http.StatusCreated, echo.Map{"message": "User registered successfully"})
+	// Google AUTH successful
+	email := payload.Claims["email"].(string)
+
+	user, err := h.DB.UserExistsByEmail(email)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "User lookup error"})
+	}
+
+	if user == nil {
+		// Register user
+		name := payload.Claims["name"].(string)
+		user, err = h.DB.RegisterUser(name, email)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Registration error"})
+		}
+	}
+
+	fmt.Println("User logged in", user.Name)
+
+	// Issue JWT tokens
+	accessToken, err := utils.GenereateAccessToken(user.Email)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Failed to generate access token"})
+	}
+
+	refreshToken, err := utils.GenerateRefreshToken(user.Email)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Failed to generate refresh token"})
+	}
+
+	c.SetCookie(utils.SetAccessCookie(accessToken))
+	c.SetCookie(utils.SetRefreshCookie(refreshToken))
+
+	return c.JSON(http.StatusOK, echo.Map{
+		"success": true,
+		"user": echo.Map{
+			"name":  user.Name,
+			"email": user.Email,
+		},
+	})
 }
 
-func (h *Handler) GetUsers(c echo.Context) error {
-	users, err := h.DB.GetUsers()
+func (h *Handler) RefreshTokenHandler(c echo.Context) error {
+	cookie, err := c.Cookie("refresh_token")
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Failed to fetch users"})
+		return c.JSON(http.StatusUnauthorized, echo.Map{"error": "No refresh token provided"})
 	}
 
-	return c.JSON(http.StatusOK, users)
+	refreshToken := cookie.Value
+	email, err := utils.ValidateJWT(refreshToken)
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, echo.Map{"error": "Invalid refresh token"})
+	}
+
+	// Generate new access token
+	newAccessToken, err := utils.GenereateAccessToken(email)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Failed to generate access token"})
+	}
+
+	c.SetCookie(utils.SetAccessCookie(newAccessToken))
+
+	return c.JSON(http.StatusOK, echo.Map{
+		"success": true,
+	})
+}
+
+func (h *Handler) LogoutHandler(c echo.Context) error {
+	c.SetCookie(utils.ClearCookie("access_token"))
+	c.SetCookie(utils.ClearCookie("refresh_token"))
+	return c.JSON(http.StatusOK, echo.Map{"success": true})
 }

@@ -1,4 +1,4 @@
-import RegisterForm from "../components/RegisterForm";
+import GoogleLogin from "../components/GoogleLogin.tsx";
 
 function Register() {
     return (
@@ -15,7 +15,7 @@ function Register() {
         </div>
 
         <div>
-        <RegisterForm />
+        <GoogleLogin />
         </div>
     
     </div>
