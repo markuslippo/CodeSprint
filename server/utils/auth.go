@@ -15,7 +15,7 @@ type Claims struct {
 }
 
 func GenereateAccessToken(email string) (string, error) {
-	duration := 15 * time.Minute
+	duration := 1 * time.Minute
 
 	claims := Claims{
 		Email: email,
@@ -75,7 +75,7 @@ func SetRefreshCookie(token string) *http.Cookie {
 		Value:    token,
 		Expires:  time.Now().Add(30 * 24 * time.Hour),
 		HttpOnly: true,
-		Path:     "/",
+		Path:     "/auth/refresh",
 		SameSite: http.SameSiteLaxMode,
 		Secure:   false,
 	}

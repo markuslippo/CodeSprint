@@ -4,14 +4,10 @@ import { useAuth } from "../context/AuthContext";
 
 const ProtectedRoutes: React.FC = () => {
   const { isAuthenticated } = useAuth();
-  const { isAuthenticating } = useAuth();
-
-  if (isAuthenticating) {
-    return null;
-  }
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace/>;
+    //return <Navigate to="/login" replace/>;
+    return <p>Login form comes here</p>;
   }
 
   return <Outlet />;

@@ -4,11 +4,6 @@ import { useAuth } from "../context/AuthContext";
 
 const PublicRoutes: React.FC = () => {
   const { isAuthenticated } = useAuth();
-  const { isAuthenticating } = useAuth();
-  
-  if (isAuthenticating) {
-      return null;
-  }
 
   if (isAuthenticated) {
     return <Navigate to="/home" replace />;

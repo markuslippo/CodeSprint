@@ -10,12 +10,12 @@ import (
 func SetupRoutes(e *echo.Echo, db database.Database) {
 	h := handlers.NewHandler(db)
 
-	// Auth Routes
-	e.GET("/auth/me", h.AuthCheckHandler)
-	e.POST("/auth/google", h.GoogleAuthHandler)
-	e.GET("/auth/refresh", h.RefreshTokenHandler)
-	e.POST("/auth/logout", h.LogoutHandler)
+	// Auth
+	e.GET("/auth/me", h.AuthenticationCheck)
+	e.POST("/auth/google", h.GoogleAuthentication)
+	e.GET("/auth/refresh", h.RefreshToken)
+	e.GET("/auth/logout", h.Logout)
 
-	// User Routes
-	e.GET("/users", h.GetUsers, middleware.AuthMiddleware)
+	e.GET("/coding-task", h.GetCodeTasks, middleware.AuthMiddleware)
+
 }

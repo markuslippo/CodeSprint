@@ -11,7 +11,7 @@ import (
 	"google.golang.org/api/idtoken"
 )
 
-func (h *Handler) AuthCheckHandler(c echo.Context) error {
+func (h *Handler) AuthenticationCheck(c echo.Context) error {
 	fmt.Println("User pinged /auth/me")
 	cookie, err := c.Cookie("access_token")
 	if err != nil {
@@ -41,7 +41,7 @@ func (h *Handler) AuthCheckHandler(c echo.Context) error {
 	})
 }
 
-func (h *Handler) GoogleAuthHandler(c echo.Context) error {
+func (h *Handler) GoogleAuthentication(c echo.Context) error {
 	var req struct {
 		Token string `json:"token"`
 	}
@@ -98,7 +98,7 @@ func (h *Handler) GoogleAuthHandler(c echo.Context) error {
 	})
 }
 
-func (h *Handler) RefreshTokenHandler(c echo.Context) error {
+func (h *Handler) RefreshToken(c echo.Context) error {
 	cookie, err := c.Cookie("refresh_token")
 	if err != nil {
 		return c.JSON(http.StatusUnauthorized, echo.Map{"error": "No refresh token provided"})
@@ -123,7 +123,7 @@ func (h *Handler) RefreshTokenHandler(c echo.Context) error {
 	})
 }
 
-func (h *Handler) LogoutHandler(c echo.Context) error {
+func (h *Handler) Logout(c echo.Context) error {
 	c.SetCookie(utils.ClearCookie("access_token"))
 	c.SetCookie(utils.ClearCookie("refresh_token"))
 	return c.JSON(http.StatusOK, echo.Map{"success": true})

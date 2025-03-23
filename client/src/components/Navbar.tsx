@@ -6,7 +6,7 @@ import { useAuth } from "../context/AuthContext";
 
 
 const Navbar: React.FC = () => {
-  const { isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
   const handleLogOut = async()  => {
     await logout();
@@ -41,13 +41,16 @@ const Navbar: React.FC = () => {
         <div className={styles.navRight}>
           <ul className={styles.navLinks}>
             {isAuthenticated ? (
-              <li>
-                <Button
-                  text="Logout"
-                  variant="secondary"
-                  onClick={handleLogOut}
-                />
-              </li>
+              <div>
+                <p>{user?.name}</p>
+                <li>
+                  <Button
+                    text="Logout"
+                    variant="secondary"
+                    onClick={handleLogOut}
+                  />
+                </li>
+              </div>
             ) : (
               <>
                 <li>

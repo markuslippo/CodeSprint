@@ -1,5 +1,12 @@
+import CodeEditor from "../components/CodeEditor";
+
 function Singleplayer() {
-    return <h1>Singleplayer Mode</h1>;
+    return (
+        <div>
+            <h1>Singleplayer Mode</h1>
+            <CodeEditor />
+        </div>
+    );
 }
   
 export default Singleplayer;
